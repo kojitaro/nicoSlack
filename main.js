@@ -5,6 +5,10 @@ const { app, BrowserWindow, ipcMain } = electron;
 const { RTMClient } = require('@slack/rtm-api');
 const config = require('./config.json');
 
+if(config.disableHardwareAcceleration){
+  app.disableHardwareAcceleration();
+}
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -20,7 +24,7 @@ function createWindow() {
     width,
     height,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
     }
   };
 
