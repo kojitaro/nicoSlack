@@ -2,6 +2,7 @@
 
 const electron = require('electron');
 const { app, BrowserWindow, ipcMain } = electron;
+const { RTMClient } = require('@slack/rtm-api');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -96,27 +97,29 @@ function sendToRendererContent(slackText) {
 }; 
 
 
-//
-// //// Slack Outgoing Web Hook
-// const { RTMClient } = require('@slack/client');
-// const token = require('./account.json').token;
-//
-// const rtm = new RTMClient(token, { logLevel: 'debug' });
-//
-// rtm.start();
-//
-// rtm.on('message', (event) => {
-//   // For structure of `event`, see https://api.slack.com/events/message
-//
-//   let message = event;
-//   // Skip messages that are from a bot or my own user ID
-//   // if ((message.subtype && message.subtype === 'bot_message') ||
-//   //     (!message.subtype && message.user === rtm.activeUserId)) {
-//   //     return;
-//   // }
-//
-//   // Log the message
-//   console.log(`(channel:${message.channel}) ${message.user} says: ${message.text}`);
-//   sendToRendererContent(`${message.text}`);
-// });
-//
+
+//// Slack Outgoing Web Hook
+const token = require('./config.json').token;
+
+const rtm = new RTMClient(token, { logLevel: 'debug' });
+
+
+rtm.on('message', (event) => {
+  console.log(event);
+
+  let message = event;
+  // Skip messages that are from a bot or my own user ID
+  // if ((message.subtype && message.subtype === 'bot_message') ||
+  //     (!message.subtype && message.user === rtm.activeUserId)) {
+  //     return;
+  // }
+
+  // Log the message
+  console.log(`(channel:${message.channel}) ${message.user} says: ${message.text}`);
+  sendToRendererContent(`${message.text}`);
+});
+
+(async () => {
+  await rtm.start();
+})();
+

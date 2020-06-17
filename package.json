@@ -17,7 +17,7 @@
     "electron": "^9.0.4"
   },
   "dependencies": {
-    "@slack/client": "^4.3.1",
+    "@slack/rtm-api": "^5.0.5",
     "nicojs": "^1.1.8"
   }
 }

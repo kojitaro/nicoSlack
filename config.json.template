@@ -1,0 +1,5 @@
+{
+"token" : "your slack Bot User OAuth Access Token"
+  "transparent": true,
+  "background_color": "#00ff00"
+}
