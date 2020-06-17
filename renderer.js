@@ -4,10 +4,11 @@ const { ipcRenderer } = require('electron');
 
 
 
+
 var nico = new NicoJS({
     app: document.getElementById('app'),
-    width: 1500,
-    height: 400,
+    width: document.documentElement.clientWidth,
+    height: document.documentElement.clientHeight,
     font_size: 50,     // opt
     color: '#fff'  // opt
 });
@@ -24,3 +25,7 @@ ipcRenderer.on('slackContent', (event, arg) => {
 
     nico.send(arg);
 });
+
+window.addEventListener( 'resize', function() {
+    nico.resize(window.innerWidth, window.innerHeight);
+}, false );
