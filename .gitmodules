@@ -1,0 +1,3 @@
+[submodule "nicoJS"]
+	path = nicoJS
+	url = git@github.com:kojitaro/nicoJS.git
