@@ -55,7 +55,7 @@ function createWindow() {
 
 
   invisibleWindow = new BrowserWindow(options);
-  invisibleWindow.webContents.openDevTools();
+  // invisibleWindow.webContents.openDevTools();
   invisibleWindow.loadFile('invisible.html');
   // 透明な部分のマウスのクリックを検知させない
   if(mainWindow){
