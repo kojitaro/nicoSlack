@@ -30,8 +30,6 @@ function createWindow() {
     options.alwaysOnTop = true; // 常に最前面
   }
 
-
-
   // and load the index.html of the app.
   if(config.transparent){
     mainWindow = new BrowserWindow({
@@ -55,6 +53,7 @@ function createWindow() {
 
 
   invisibleWindow = new BrowserWindow(options);
+  invisibleWindow.setMenu(null);
   // invisibleWindow.webContents.openDevTools();
   invisibleWindow.loadFile('invisible.html');
   // 透明な部分のマウスのクリックを検知させない
