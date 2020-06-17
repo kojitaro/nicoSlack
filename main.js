@@ -24,6 +24,9 @@ function createWindow() {
     frame: false, //　ウィンドウフレーム非表示
     transparent: true,  //背景を透明に
     alwaysOnTop: true,  //常に最前面
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
 
 
@@ -50,7 +53,9 @@ function createWindow() {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    invisibleWindow = null;
+    if( invisibleWindow ){
+      invisibleWindow.close();
+    }
     mainWindow = null;
   })
 }
@@ -91,27 +96,27 @@ function sendToRendererContent(slackText) {
 }; 
 
 
-
-//// Slack Outgoing Web Hook
-const { RTMClient } = require('@slack/client');
-const token = require('./account.json').token;
-
-const rtm = new RTMClient(token, { logLevel: 'debug' });
-
-rtm.start();
-
-rtm.on('message', (event) => {
-  // For structure of `event`, see https://api.slack.com/events/message
-
-  let message = event;
-  // Skip messages that are from a bot or my own user ID
-  // if ((message.subtype && message.subtype === 'bot_message') ||
-  //     (!message.subtype && message.user === rtm.activeUserId)) {
-  //     return;
-  // }
-
-  // Log the message
-  console.log(`(channel:${message.channel}) ${message.user} says: ${message.text}`);
-  sendToRendererContent(`${message.text}`);
-});
-
+//
+// //// Slack Outgoing Web Hook
+// const { RTMClient } = require('@slack/client');
+// const token = require('./account.json').token;
+//
+// const rtm = new RTMClient(token, { logLevel: 'debug' });
+//
+// rtm.start();
+//
+// rtm.on('message', (event) => {
+//   // For structure of `event`, see https://api.slack.com/events/message
+//
+//   let message = event;
+//   // Skip messages that are from a bot or my own user ID
+//   // if ((message.subtype && message.subtype === 'bot_message') ||
+//   //     (!message.subtype && message.user === rtm.activeUserId)) {
+//   //     return;
+//   // }
+//
+//   // Log the message
+//   console.log(`(channel:${message.channel}) ${message.user} says: ${message.text}`);
+//   sendToRendererContent(`${message.text}`);
+// });
+//
