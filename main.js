@@ -3,6 +3,8 @@
 const electron = require('electron');
 const { app, BrowserWindow, ipcMain } = electron;
 const { RTMClient } = require('@slack/rtm-api');
+const config = require('./config.json');
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -13,52 +15,51 @@ function createWindow() {
 
   // 画面サイズを取得
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
-  
-  mainWindow = new BrowserWindow({
-    width: 320,
-    height: 240,
-  });
 
-  invisibleWindow = new BrowserWindow({
+  const options = {
     width,
     height,
-    frame: false, //　ウィンドウフレーム非表示
-    transparent: true,  //背景を透明に
-    alwaysOnTop: true,  //常に最前面
     webPreferences: {
       nodeIntegration: true
     }
-  });
+  };
+
+  if( config.transparent ){
+    options.frame = false; // ウィンドウフレーム非表示
+    options.transparent = true; // 背景を透明に
+    options.alwaysOnTop = true; // 常に最前面
+  }
 
 
-  // 透明な部分のマウスのクリックを検知させない
-  invisibleWindow.setIgnoreMouseEvents(true);
 
   // and load the index.html of the app.
-  mainWindow.loadFile('index.html');
+  if(config.transparent){
+    mainWindow = new BrowserWindow({
+      width: 320,
+      height: 240,
+    });
+
+    mainWindow.loadFile('index.html');
+    // Open the DevTools.
+    // mainWindow.webContents.openDevTools()
+    mainWindow.on('closed', function () {
+      // Dereference the window object, usually you would store windows
+      // in an array if your app supports multi windows, this is the time
+      // when you should delete the corresponding element.
+      if( invisibleWindow ){
+        invisibleWindow.close();
+      }
+      mainWindow = null;
+    })
+  }
+
+
+  invisibleWindow = new BrowserWindow(options);
   invisibleWindow.loadFile('invisible.html');
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
-
-  // Emitted when the window is closed.
-  invisibleWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    invisibleWindow = null;
-    mainWindow = null;
-  });
-
-  mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    if( invisibleWindow ){
-      invisibleWindow.close();
-    }
-    mainWindow = null;
-  })
+  // 透明な部分のマウスのクリックを検知させない
+  if(mainWindow){
+    invisibleWindow.setIgnoreMouseEvents(true);
+  }
 }
 
 // This method will be called when Electron has finished
@@ -94,14 +95,14 @@ function sendToRendererContent(slackText) {
   // レンダラー側のonが実行される前に送るとエラーで落ちるので注意
   invisibleWindow.webContents.send('slackContent', slackText)
   // });
-}; 
+}
 
 
 
 //// Slack Outgoing Web Hook
-const token = require('./config.json').token;
 
-const rtm = new RTMClient(token, { logLevel: 'debug' });
+const rtm = new RTMClient(config.token,
+    { logLevel: 'info' });
 
 
 rtm.on('message', (event) => {
