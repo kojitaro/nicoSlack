@@ -1,5 +1,6 @@
 {
 "token" : "your slack Bot User OAuth Access Token"
   "transparent": true,
-  "disableHardwareAcceleration": false
+  "disableHardwareAcceleration": false,
+  "openDevTools": false
 }

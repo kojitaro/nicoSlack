@@ -42,8 +42,9 @@ function createWindow() {
     });
 
     mainWindow.loadFile('index.html');
-    // Open the DevTools.
-    // mainWindow.webContents.openDevTools();
+    if(config.openDevTools) {
+      mainWindow.webContents.openDevTools();
+    }
     mainWindow.on('closed', function () {
       // Dereference the window object, usually you would store windows
       // in an array if your app supports multi windows, this is the time
@@ -58,7 +59,9 @@ function createWindow() {
 
   invisibleWindow = new BrowserWindow(options);
   invisibleWindow.setMenu(null);
-  // invisibleWindow.webContents.openDevTools();
+  if(config.openDevTools){
+    invisibleWindow.webContents.openDevTools();
+  }
   invisibleWindow.loadFile('invisible.html');
   // 透明な部分のマウスのクリックを検知させない
   if(mainWindow){
